@@ -57,7 +57,7 @@ async def seed():
             type="Laminate",
             m2_per_box=2.4,
             pieces_per_box=12,
-            quantity=8,
+            quantity=4,  # 8 - 4 (OUT) from t2
             price=24500,
             min_threshold=10,
         )
@@ -66,7 +66,7 @@ async def seed():
             type="Solid Wood",
             m2_per_box=2.0,
             pieces_per_box=10,
-            quantity=48,
+            quantity=68,  # 48 + 20 (IN) from t1
             price=52000,
             min_threshold=10,
         )
@@ -75,7 +75,7 @@ async def seed():
             type="Engineered",
             m2_per_box=2.2,
             pieces_per_box=8,
-            quantity=5,
+            quantity=20,  # 5 + 15 (IN) from t3
             price=38000,
             min_threshold=8,
         )

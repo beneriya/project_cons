@@ -1,17 +1,18 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useApp } from '../context/appContext'
 import { Button } from '../components/Button'
 import { Input, Select } from '../components/Input'
-import { Calculator, Download } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { IconDownload, IconCube, IconLayout2 } from '@tabler/icons-react'
+import {
+  calculateMaterials,
+  MAX_ROOM_DIM,
+  ROOM_PRESETS,
+  type LayoutPattern,
+} from '@/lib/plannerCalculations'
+import { FloorPreview } from '@/components/planner/FloorPreview'
+import { FloorPreview3D } from '@/components/planner/FloorPreview3D'
 
-interface FloorPlan {
-  width: number
-  height: number
-  materialId: string
-  wastePercentage: number
-}
-
-/** Material shape used for layout calculations (m2PerBox, piecesPerBox, price, quantity). */
 interface MaterialForLayout {
   id: string
   name: string
@@ -21,267 +22,325 @@ interface MaterialForLayout {
   quantity: number
 }
 
+/** Preview dimensions: cap to MAX_ROOM_DIM while preserving aspect ratio */
+function getPreviewDimensions(width: number, height: number): [number, number] {
+  if (width <= MAX_ROOM_DIM && height <= MAX_ROOM_DIM) return [width, height]
+  const scale = MAX_ROOM_DIM / Math.max(width, height)
+  return [width * scale, height * scale]
+}
+
+const LAYOUT_PATTERNS: { value: LayoutPattern; label: string }[] = [
+  { value: 'straight-h', label: 'Straight (horizontal)' },
+  { value: 'straight-v', label: 'Straight (vertical)' },
+  { value: 'diagonal', label: 'Diagonal' },
+]
+
 export default function LayoutPlannerPage() {
+  const previewRef = useRef<HTMLDivElement>(null)
   const { materials } = useApp()
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [floorPlan, setFloorPlan] = useState<FloorPlan>({
+  const [floorPlan, setFloorPlan] = useState({
     width: 5,
     height: 4,
     materialId: '',
     wastePercentage: 10,
+    pattern: 'straight-h' as LayoutPattern,
+    view3D: true,
   })
-  const [calculation, setCalculation] = useState<{
-    totalArea: number
-    areaWithWaste: number
-    tilesNeeded: number
-    boxesNeeded: number
-    totalCost: number
-  } | null>(null)
 
-  const selectedMaterial = materials.find(m => m.id === floorPlan.materialId) as MaterialForLayout | undefined
+  const selectedMaterial = materials.find(
+    (m) => m.id === floorPlan.materialId
+  ) as MaterialForLayout | undefined
 
-  const drawFloorPlan = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+  const calculation = useMemo(() => {
+    if (!selectedMaterial || floorPlan.width <= 0 || floorPlan.height <= 0) return null
+    return calculateMaterials(
+      floorPlan.width,
+      floorPlan.height,
+      selectedMaterial.m2PerBox,
+      selectedMaterial.piecesPerBox,
+      selectedMaterial.price,
+      floorPlan.wastePercentage,
+      floorPlan.pattern
+    )
+  }, [floorPlan.width, floorPlan.height, floorPlan.wastePercentage, floorPlan.pattern, selectedMaterial])
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    const padding = 40
-    const availableWidth = canvas.width - padding * 2
-    const availableHeight = canvas.height - padding * 2
-
-    const scaleX = availableWidth / floorPlan.width
-    const scaleY = availableHeight / floorPlan.height
-    const scale = Math.min(scaleX, scaleY, 80)
-
-    const roomWidth = floorPlan.width * scale
-    const roomHeight = floorPlan.height * scale
-    const offsetX = (canvas.width - roomWidth) / 2
-    const offsetY = (canvas.height - roomHeight) / 2
-
-    ctx.strokeStyle = '#0B1E3D'
-    ctx.lineWidth = 3
-    ctx.strokeRect(offsetX, offsetY, roomWidth, roomHeight)
-
-    ctx.fillStyle = '#F4F6FA'
-    ctx.fillRect(offsetX, offsetY, roomWidth, roomHeight)
-
-    if (selectedMaterial) {
-      const tileWidth = Math.sqrt(selectedMaterial.m2PerBox / selectedMaterial.piecesPerBox) * scale
-      const tileHeight = tileWidth
-
-      ctx.strokeStyle = '#8A93A8'
-      ctx.lineWidth = 0.5
-
-      for (let x = offsetX; x < offsetX + roomWidth; x += tileWidth) {
-        for (let y = offsetY; y < offsetY + roomHeight; y += tileHeight) {
-          const w = Math.min(tileWidth, offsetX + roomWidth - x)
-          const h = Math.min(tileHeight, offsetY + roomHeight - y)
-
-          const shade =
-            (Math.floor(x / tileWidth) + Math.floor(y / tileHeight)) % 2 === 0 ? '#D6E4FA' : '#C5D9F2'
-          ctx.fillStyle = shade
-          ctx.fillRect(x, y, w, h)
-          ctx.strokeRect(x, y, w, h)
-        }
+  const handleExport = () => {
+    const svg = previewRef.current?.querySelector('svg')
+    if (!svg) return
+    const serializer = new XMLSerializer()
+    const str = serializer.serializeToString(svg)
+    const blob = new Blob([str], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        ctx.drawImage(img, 0, 0)
+        const a = document.createElement('a')
+        a.href = canvas.toDataURL('image/png')
+        a.download = `floor-plan-${floorPlan.width}x${floorPlan.height}.png`
+        a.click()
       }
+      URL.revokeObjectURL(url)
     }
-
-    ctx.fillStyle = '#0B1E3D'
-    ctx.font = '14px "DM Sans", sans-serif'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-
-    ctx.fillText(`${floorPlan.width}m`, canvas.width / 2, offsetY - 20)
-
-    ctx.save()
-    ctx.translate(offsetX - 20, canvas.height / 2)
-    ctx.rotate(-Math.PI / 2)
-    ctx.fillText(`${floorPlan.height}m`, 0, 0)
-    ctx.restore()
-
-    ctx.font = 'bold 18px "Syne", sans-serif'
-    ctx.fillStyle = '#2563C4'
-    ctx.fillText(`${floorPlan.width * floorPlan.height} m²`, canvas.width / 2, canvas.height - 20)
-  }, [floorPlan, selectedMaterial])
-
-  useEffect(() => {
-    drawFloorPlan()
-  }, [drawFloorPlan])
-
-  const handleCalculate = () => {
-    if (!selectedMaterial) return
-
-    const totalArea = floorPlan.width * floorPlan.height
-    const wasteMultiplier = 1 + floorPlan.wastePercentage / 100
-    const areaWithWaste = totalArea * wasteMultiplier
-    const boxesNeeded = Math.ceil(areaWithWaste / selectedMaterial.m2PerBox)
-    const tilesNeeded = boxesNeeded * selectedMaterial.piecesPerBox
-    const totalCost = boxesNeeded * selectedMaterial.price
-
-    setCalculation({
-      totalArea,
-      areaWithWaste,
-      tilesNeeded,
-      boxesNeeded,
-      totalCost,
-    })
+    img.src = url
   }
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-['Syne'] text-[48px] font-extrabold text-[#0B1E3D] leading-tight">
-          Layout Planner
-        </h1>
-        <p className="text-[#8A93A8] mt-2">
+    <div className="flex flex-col gap-8">
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Layout Planner</h1>
+        <p className="text-sm text-muted-foreground max-w-xl">
           Design your floor and calculate required materials
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Input Panel */}
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-          <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-4">
-            Room Dimensions
-          </h3>
+        <Card>
+          <CardContent className="pt-6">
+            <h3 className="mb-4 text-lg font-semibold">Room Dimensions</h3>
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                {ROOM_PRESETS.map((p) => (
+                  <Button
+                    key={p.label}
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setFloorPlan((s) => ({
+                        ...s,
+                        width: p.width,
+                        height: p.height,
+                      }))
+                    }
+                  >
+                    {p.label}
+                  </Button>
+                ))}
+              </div>
+              <Input
+                label="Width (meters)"
+                type="number"
+                step="0.1"
+                min={0.1}
+                max={MAX_ROOM_DIM}
+                value={floorPlan.width}
+                onChange={(e) =>
+                  setFloorPlan((s) => ({
+                    ...s,
+                    width: parseFloat(e.target.value) || 0,
+                  }))
+                }
+                hint={floorPlan.width > MAX_ROOM_DIM ? `Preview limited to ${MAX_ROOM_DIM}m` : undefined}
+              />
+              <Input
+                label="Height (meters)"
+                type="number"
+                step="0.1"
+                min={0.1}
+                max={MAX_ROOM_DIM}
+                value={floorPlan.height}
+                onChange={(e) =>
+                  setFloorPlan((s) => ({
+                    ...s,
+                    height: parseFloat(e.target.value) || 0,
+                  }))
+                }
+                hint={floorPlan.height > MAX_ROOM_DIM ? `Preview limited to ${MAX_ROOM_DIM}m` : undefined}
+              />
+              <Select
+                label="Layout Pattern"
+                value={floorPlan.pattern}
+                onChange={(e) =>
+                  setFloorPlan((s) => ({
+                    ...s,
+                    pattern: e.target.value as LayoutPattern,
+                  }))
+                }
+              >
+                {LAYOUT_PATTERNS.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                label="Parquet Type"
+                value={floorPlan.materialId}
+                onChange={(e) =>
+                  setFloorPlan((s) => ({ ...s, materialId: e.target.value }))
+                }
+              >
+                <option value="">Select a material...</option>
+                {(materials as MaterialForLayout[]).map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} ({m.m2PerBox}m² per box)
+                  </option>
+                ))}
+              </Select>
+              <Input
+                label="Waste Percentage"
+                type="number"
+                min={0}
+                max={50}
+                value={floorPlan.wastePercentage}
+                onChange={(e) =>
+                  setFloorPlan((s) => ({
+                    ...s,
+                    wastePercentage: parseInt(e.target.value, 10) || 0,
+                  }))
+                }
+                hint="Recommended: 10-15% straight, 15-20% diagonal"
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-          <div className="space-y-4">
-            <Input
-              label="Width (meters)"
-              type="number"
-              step="0.1"
-              min={0.1}
-              value={floorPlan.width}
-              onChange={(e) => setFloorPlan({ ...floorPlan, width: parseFloat(e.target.value) || 0 })}
-            />
-
-            <Input
-              label="Height (meters)"
-              type="number"
-              step="0.1"
-              min={0.1}
-              value={floorPlan.height}
-              onChange={(e) => setFloorPlan({ ...floorPlan, height: parseFloat(e.target.value) || 0 })}
-            />
-
-            <Select
-              label="Parquet Type"
-              value={floorPlan.materialId}
-              onChange={(e) => setFloorPlan({ ...floorPlan, materialId: e.target.value })}
-            >
-              <option value="">Select a material...</option>
-              {(materials as unknown as MaterialForLayout[]).map(material => (
-                <option key={material.id} value={material.id}>
-                  {material.name} ({material.m2PerBox}m² per box)
-                </option>
-              ))}
-            </Select>
-
-            <Input
-              label="Waste Percentage"
-              type="number"
-              min={0}
-              max={50}
-              value={floorPlan.wastePercentage}
-              onChange={(e) => setFloorPlan({ ...floorPlan, wastePercentage: parseInt(e.target.value, 10) || 0 })}
-              hint="Recommended: 10-15% for straight layouts, 15-20% for diagonal"
-            />
-
-            <Button
-              onClick={handleCalculate}
-              className="w-full"
-              disabled={!floorPlan.materialId || floorPlan.width <= 0 || floorPlan.height <= 0}
-            >
-              <Calculator size={16} className="mr-2" />
-              Calculate Materials
-            </Button>
-          </div>
-        </div>
-
-        {/* Canvas Panel */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D]">
-              Floor Preview
-            </h3>
-            <Button variant="secondary" size="sm" className="text-xs px-3 py-1.5">
-              <Download size={14} className="mr-1.5" />
-              Export
-            </Button>
-          </div>
-
-          <canvas
-            ref={canvasRef}
-            width={700}
-            height={500}
-            className="w-full border border-[#D9DEEA] rounded-lg"
-          />
+        {/* Floor Preview */}
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          {selectedMaterial && (
+            <Card>
+              <CardContent className="pt-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold">{selectedMaterial.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {selectedMaterial.m2PerBox}m²/box · ₮
+                      {selectedMaterial.price.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-lg font-semibold">Floor Preview</h3>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={floorPlan.view3D ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() =>
+                      setFloorPlan((s) => ({ ...s, view3D: true }))
+                    }
+                  >
+                    <IconCube size={14} className="mr-1.5" />
+                    3D View
+                  </Button>
+                  <Button
+                    variant={!floorPlan.view3D ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() =>
+                      setFloorPlan((s) => ({ ...s, view3D: false }))
+                    }
+                  >
+                    <IconLayout2 size={14} className="mr-1.5" />
+                    2D Plan
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExport}
+                    disabled={
+                      floorPlan.width <= 0 ||
+                      floorPlan.height <= 0 ||
+                      floorPlan.view3D
+                    }
+                  >
+                    <IconDownload size={14} className="mr-1.5" />
+                    Export PNG
+                  </Button>
+                </div>
+              </div>
+              {(floorPlan.width > MAX_ROOM_DIM || floorPlan.height > MAX_ROOM_DIM) && (
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Preview scaled to fit {MAX_ROOM_DIM}m max for performance. Material calculation uses full dimensions.
+                </p>
+              )}
+              <div ref={previewRef} className="flex h-[440px] w-full min-w-0 shrink-0 flex-col overflow-hidden">
+                {floorPlan.view3D && selectedMaterial ? (
+                  <FloorPreview3D
+                    width={getPreviewDimensions(floorPlan.width, floorPlan.height)[0]}
+                    height={getPreviewDimensions(floorPlan.width, floorPlan.height)[1]}
+                    m2PerBox={selectedMaterial.m2PerBox}
+                    piecesPerBox={selectedMaterial.piecesPerBox}
+                    pattern={floorPlan.pattern}
+                  />
+                ) : selectedMaterial ? (
+                  <FloorPreview
+                    width={getPreviewDimensions(floorPlan.width, floorPlan.height)[0]}
+                    height={getPreviewDimensions(floorPlan.width, floorPlan.height)[1]}
+                    m2PerBox={selectedMaterial.m2PerBox}
+                    piecesPerBox={selectedMaterial.piecesPerBox}
+                    pattern={floorPlan.pattern}
+                  />
+                ) : (
+                  <div className="flex min-h-[400px] items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30">
+                    <p className="text-sm text-muted-foreground">
+                      Select a parquet material to see the floor layout
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
       {/* Calculation Results */}
       {calculation && (
-        <div className="mt-6 bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-          <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-4">
-            Material Calculation Results
-          </h3>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="bg-[#F4F6FA] rounded-lg p-4">
-              <div className="text-xs text-[#8A93A8] mb-1">Room Area</div>
-              <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
-                {calculation.totalArea.toFixed(1)} m²
+        <Card>
+          <CardContent className="pt-6">
+            <h3 className="mb-4 text-lg font-semibold">
+              Material Calculation Results
+            </h3>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+              <div className="rounded-lg bg-muted p-4">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  Room Area
+                </div>
+                <div className="text-2xl font-bold">
+                  {calculation.totalArea.toFixed(1)} m²
+                </div>
               </div>
-            </div>
-
-            <div className="bg-[#F4F6FA] rounded-lg p-4">
-              <div className="text-xs text-[#8A93A8] mb-1">With Waste</div>
-              <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
-                {calculation.areaWithWaste.toFixed(1)} m²
+              <div className="rounded-lg bg-muted p-4">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  With Waste
+                </div>
+                <div className="text-2xl font-bold">
+                  {calculation.areaWithWaste.toFixed(1)} m²
+                </div>
               </div>
-            </div>
-
-            <div className="bg-[#F4F6FA] rounded-lg p-4">
-              <div className="text-xs text-[#8A93A8] mb-1">Tiles Needed</div>
-              <div className="font-['Syne'] text-2xl font-bold text-[#2563C4]">
-                {calculation.tilesNeeded}
+              <div className="rounded-lg bg-muted p-4">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  Tiles Needed
+                </div>
+                <div className="text-2xl font-bold text-primary">
+                  {calculation.tilesNeeded}
+                </div>
               </div>
-            </div>
-
-            <div className="bg-[#F4F6FA] rounded-lg p-4">
-              <div className="text-xs text-[#8A93A8] mb-1">Boxes Needed</div>
-              <div className="font-['Syne'] text-2xl font-bold text-[#2563C4]">
-                {calculation.boxesNeeded}
+              <div className="rounded-lg bg-muted p-4">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  Boxes Needed
+                </div>
+                <div className="text-2xl font-bold text-primary">
+                  {calculation.boxesNeeded}
+                </div>
               </div>
-            </div>
-
-            <div className="bg-[#D6E4FA] rounded-lg p-4">
-              <div className="text-xs text-[#1A3A6B] mb-1">Total Cost</div>
-              <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
-                ₮{calculation.totalCost.toLocaleString()}
-              </div>
-            </div>
-          </div>
-
-          {selectedMaterial && calculation.boxesNeeded > selectedMaterial.quantity && (
-            <div className="mt-4 p-4 bg-[#FEF3C7] border border-[#F59E0B] rounded-lg">
-              <div className="flex items-start gap-2">
-                <span className="text-[#92400E]">⚠️</span>
-                <div>
-                  <div className="font-medium text-sm text-[#92400E]">Insufficient Stock</div>
-                  <div className="text-xs text-[#92400E] mt-1">
-                    You need {calculation.boxesNeeded} boxes but only {selectedMaterial.quantity} are available.
-                    Please order {calculation.boxesNeeded - selectedMaterial.quantity} more boxes.
-                  </div>
+              <div className="rounded-lg bg-primary/10 p-4">
+                <div className="mb-1 text-xs text-primary">Total Cost</div>
+                <div className="text-2xl font-bold">
+                  ₮{calculation.totalCost.toLocaleString()}
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

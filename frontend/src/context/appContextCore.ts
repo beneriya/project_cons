@@ -44,14 +44,16 @@ export interface AppContextValue {
   transactions: Transaction[]
   setMaterials: (m: Material[] | ((prev: Material[]) => Material[])) => void
   setTransactions: (t: Transaction[] | ((prev: Transaction[]) => Transaction[])) => void
-  addMaterial: (data: AddMaterialInput) => void
-  updateMaterial: (id: string, data: UpdateMaterialInput) => void
-  deleteMaterial: (id: string) => void
-  addTransaction: (data: AddTransactionInput) => void
+  addMaterial: (data: AddMaterialInput) => Promise<void>
+  updateMaterial: (id: string, data: UpdateMaterialInput) => Promise<void>
+  deleteMaterial: (id: string) => Promise<void>
+  addTransaction: (data: AddTransactionInput) => Promise<void>
   user: User | null
-  login: (email: string, password: string) => boolean
-  signup: (name: string, email: string, password: string) => boolean
+  loading: boolean
+  login: (email: string, password: string) => Promise<boolean>
+  signup: (name: string, email: string, password: string) => Promise<boolean>
   logout: () => void
+  refresh: () => Promise<void>
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

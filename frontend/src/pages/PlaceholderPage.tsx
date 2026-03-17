@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom'
-import './HomePage.css'
 
 const titles: Record<string, string> = {
   '/inventory': 'Manage Inventory',
@@ -12,9 +11,9 @@ export default function PlaceholderPage() {
   const { pathname } = useLocation()
   const title = titles[pathname] ?? 'Page'
   return (
-    <div className="dashboard-header">
-      <h1 className="h1-page">{title}</h1>
-      <p className="dashboard-subtitle">This page is coming soon.</p>
+    <div className="mb-6">
+      <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+      <p className="text-[0.9375rem] text-muted-foreground mt-1">This page is coming soon.</p>
     </div>
   )
 }

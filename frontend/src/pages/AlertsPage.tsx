@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useApp } from '../context/appContext'
 import { Badge } from '../components/Badge'
 import { Button } from '../components/Button'
-import { AlertTriangle, Package, ShoppingCart } from 'lucide-react'
+import { IconAlertTriangle, IconPackage, IconShoppingCart, IconCircleX, IconAlertCircle, IconCircleCheck } from '@tabler/icons-react'
 
 export default function AlertsPage() {
   const { materials } = useApp()
@@ -16,81 +16,93 @@ export default function AlertsPage() {
   }, [materials])
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-['Syne'] text-[48px] font-extrabold text-[#0B1E3D] leading-tight">
+    <div className="flex flex-col gap-8">
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
           Stock Alerts
         </h1>
-        <p className="text-[#8A93A8] mt-2">
+        <p className="text-sm text-muted-foreground max-w-xl">
           Monitor low stock and out of stock materials
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 border-l-4 border-[#E03E3E]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-xl border border-border bg-card p-6 border-l-4 border-l-destructive shadow-[var(--theme-surface-shadow)] transition-all duration-200 hover:shadow-[var(--theme-card-hover)]">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-2xl">❌</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+              <IconCircleX className="size-5" />
+            </div>
             <Badge variant="out-of-stock">{alerts.outOfStock.length}</Badge>
           </div>
-          <div className="font-['Syne'] text-2xl font-bold text-[#E03E3E]">
+          <div className="text-2xl font-bold tabular-nums text-destructive">
             {alerts.outOfStock.length}
           </div>
-          <div className="text-sm text-[#8A93A8] mt-1">Out of Stock</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Out of Stock</div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 border-l-4 border-[#F59E0B]">
+        <div className="rounded-xl border border-border bg-card p-6 border-l-4 border-l-amber-500 shadow-[var(--theme-surface-shadow)] transition-all duration-200 hover:shadow-[var(--theme-card-hover)]">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-2xl">⚠️</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+              <IconAlertTriangle className="size-5" />
+            </div>
             <Badge variant="low-stock">{alerts.lowStock.length}</Badge>
           </div>
-          <div className="font-['Syne'] text-2xl font-bold text-[#F59E0B]">
+          <div className="text-2xl font-bold tabular-nums text-amber-600">
             {alerts.lowStock.length}
           </div>
-          <div className="text-sm text-[#8A93A8] mt-1">Low Stock</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Low Stock</div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 border-l-4 border-[#2563C4]">
+        <div className="rounded-xl border border-border bg-card p-6 border-l-4 border-l-primary shadow-[var(--theme-surface-shadow)] transition-all duration-200 hover:shadow-[var(--theme-card-hover)]">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-2xl">🔴</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <IconAlertCircle className="size-5" />
+            </div>
             <Badge variant="low-stock">{alerts.critical.length}</Badge>
           </div>
-          <div className="font-['Syne'] text-2xl font-bold text-[#2563C4]">
+          <div className="text-2xl font-bold tabular-nums text-primary">
             {alerts.critical.length}
           </div>
-          <div className="text-sm text-[#8A93A8] mt-1">Critical Level</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Critical Level</div>
         </div>
       </div>
 
       {/* Out of Stock Materials */}
       {alerts.outOfStock.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-[#FEE2E2] rounded-lg flex items-center justify-center">
-              <Package size={20} className="text-[#E03E3E]" />
+        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--theme-surface-shadow)]">
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+              <IconPackage className="size-5" />
             </div>
             <div>
-              <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D]">
+              <h3 className="text-base font-semibold text-foreground">
                 Out of Stock Materials
               </h3>
-              <p className="text-xs text-[#8A93A8]">These items need immediate restocking</p>
+              <p className="text-xs text-muted-foreground mt-0.5">These items need immediate restocking</p>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="p-6 space-y-3">
             {alerts.outOfStock.map(material => (
-              <div key={material.id} className="flex items-center justify-between p-4 bg-[#FEE2E2] rounded-lg border border-[#E03E3E]/20">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <Badge variant="out-of-stock">✕ OUT OF STOCK</Badge>
-                    <div className="font-medium text-sm text-[#0B1E3D]">{material.name}</div>
+              <div
+                key={material.id}
+                className="flex items-center justify-between p-4 rounded-xl bg-destructive/5 border border-destructive/20 transition-colors hover:bg-destructive/10"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Badge variant="out-of-stock" className="gap-1 shrink-0">
+                      <IconCircleX className="size-3.5" />
+                      OUT OF STOCK
+                    </Badge>
+                    <span className="font-medium text-sm text-foreground">{material.name}</span>
                   </div>
-                  <div className="text-xs text-[#8A93A8] mt-1">
+                  <div className="text-xs text-muted-foreground mt-1">
                     Type: {material.type} • Min threshold: {material.minThreshold} boxes
                   </div>
                 </div>
-                <Button variant="danger" className="text-xs px-4 py-2">
-                  <ShoppingCart size={14} className="mr-1.5" />
+                <Button variant="danger" size="sm" className="shrink-0 ml-4">
+                  <IconShoppingCart className="size-3.5 mr-1.5" />
                   Order Now
                 </Button>
               </div>
@@ -101,55 +113,67 @@ export default function AlertsPage() {
 
       {/* Low Stock Materials */}
       {alerts.lowStock.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-[#FEF3C7] rounded-lg flex items-center justify-center">
-              <AlertTriangle size={20} className="text-[#F59E0B]" />
+        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--theme-surface-shadow)]">
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+              <IconAlertTriangle className="size-5" />
             </div>
             <div>
-              <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D]">
+              <h3 className="text-base font-semibold text-foreground">
                 Low Stock Warnings
               </h3>
-              <p className="text-xs text-[#8A93A8]">Stock levels below minimum threshold</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Stock levels below minimum threshold</p>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="p-6 space-y-3">
             {alerts.lowStock.map(material => {
               const isCritical = material.quantity <= material.minThreshold / 2
               return (
                 <div
                   key={material.id}
-                  className={`flex items-center justify-between p-4 rounded-lg border ${
+                  className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${
                     isCritical
-                      ? 'bg-[#FEF3C7] border-[#F59E0B]/30'
-                      : 'bg-[#F4F6FA] border-[#D9DEEA]'
+                      ? 'bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/15'
+                      : 'bg-muted/50 border-border hover:bg-muted'
                   }`}
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <Badge variant="low-stock">
-                        {isCritical ? '🔴 CRITICAL' : '⚠ LOW STOCK'}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Badge variant="low-stock" className="gap-1 shrink-0">
+                        {isCritical ? (
+                          <>
+                            <IconAlertCircle className="size-3.5" />
+                            CRITICAL
+                          </>
+                        ) : (
+                          <>
+                            <IconAlertTriangle className="size-3.5" />
+                            LOW STOCK
+                          </>
+                        )}
                       </Badge>
-                      <div className="font-medium text-sm text-[#0B1E3D]">{material.name}</div>
+                      <span className="font-medium text-sm text-foreground">{material.name}</span>
                     </div>
-                    <div className="text-xs text-[#8A93A8] mt-1">
+                    <div className="text-xs text-muted-foreground mt-1">
                       Current: {material.quantity} boxes • Min: {material.minThreshold} boxes • Type: {material.type}
                     </div>
-                    <div className="mt-2">
-                      <div className="h-2 bg-[#D9DEEA] rounded-full overflow-hidden">
+                    <div className="mt-2 max-w-xs">
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
-                          className={`h-full ${isCritical ? 'bg-[#E03E3E]' : 'bg-[#F59E0B]'}`}
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            isCritical ? 'bg-destructive' : 'bg-amber-500'
+                          }`}
                           style={{ width: `${Math.min(100, (material.quantity / material.minThreshold) * 100)}%` }}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="ml-4 text-right">
-                    <div className="text-sm font-semibold text-[#F59E0B]">
+                  <div className="ml-4 text-right shrink-0">
+                    <div className="text-sm font-semibold text-amber-600">
                       {material.minThreshold - material.quantity} boxes
                     </div>
-                    <div className="text-xs text-[#8A93A8]">needed</div>
+                    <div className="text-xs text-muted-foreground">needed</div>
                   </div>
                 </div>
               )
@@ -160,14 +184,20 @@ export default function AlertsPage() {
 
       {/* All Clear */}
       {alerts.outOfStock.length === 0 && alerts.lowStock.length === 0 && (
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-12 text-center">
-          <div className="text-6xl mb-4">✅</div>
-          <h3 className="font-['Syne'] text-2xl font-bold text-[#22C27A] mb-2">
-            All Stock Levels Healthy
-          </h3>
-          <p className="text-[#8A93A8]">
-            No materials are currently below minimum threshold
-          </p>
+        <div className="rounded-xl border border-border bg-card p-12 md:p-16 text-center shadow-[var(--theme-surface-shadow)]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10">
+              <IconCircleCheck className="size-8 text-emerald-600" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold text-foreground">
+                All Stock Levels Healthy
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                No materials are currently below minimum threshold
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
