@@ -30,9 +30,9 @@ function getPreviewDimensions(width: number, height: number): [number, number] {
 }
 
 const LAYOUT_PATTERNS: { value: LayoutPattern; label: string }[] = [
-  { value: 'straight-h', label: 'Straight (horizontal)' },
-  { value: 'straight-v', label: 'Straight (vertical)' },
-  { value: 'diagonal', label: 'Diagonal' },
+  { value: 'straight-h', label: 'Шулуун (хэвтээ)' },
+  { value: 'straight-v', label: 'Шулуун (босоо)' },
+  { value: 'diagonal', label: 'Диагональ' },
 ]
 
 export default function LayoutPlannerPage() {
@@ -92,9 +92,9 @@ export default function LayoutPlannerPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Layout Planner</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Байршлын төлөвлөгч</h1>
         <p className="text-sm text-muted-foreground max-w-xl">
-          Design your floor and calculate required materials
+          Шалаа төлөвлөж, шаардлагатай материалыг тооцоол
         </p>
       </div>
 
@@ -123,7 +123,7 @@ export default function LayoutPlannerPage() {
                 ))}
               </div>
               <Input
-                label="Width (meters)"
+                label="Өргөн (meters)"
                 type="number"
                 step="0.1"
                 min={0.1}
@@ -138,7 +138,7 @@ export default function LayoutPlannerPage() {
                 hint={floorPlan.width > MAX_ROOM_DIM ? `Preview limited to ${MAX_ROOM_DIM}m` : undefined}
               />
               <Input
-                label="Height (meters)"
+                label="Өндөр (meters)"
                 type="number"
                 step="0.1"
                 min={0.1}
@@ -153,7 +153,7 @@ export default function LayoutPlannerPage() {
                 hint={floorPlan.height > MAX_ROOM_DIM ? `Preview limited to ${MAX_ROOM_DIM}m` : undefined}
               />
               <Select
-                label="Layout Pattern"
+                label="Шалны чиглэл"
                 value={floorPlan.pattern}
                 onChange={(e) =>
                   setFloorPlan((s) => ({
@@ -169,7 +169,7 @@ export default function LayoutPlannerPage() {
                 ))}
               </Select>
               <Select
-                label="Parquet Type"
+                label="Паркетын материал"
                 value={floorPlan.materialId}
                 onChange={(e) =>
                   setFloorPlan((s) => ({ ...s, materialId: e.target.value }))
@@ -183,7 +183,7 @@ export default function LayoutPlannerPage() {
                 ))}
               </Select>
               <Input
-                label="Waste Percentage"
+                label="Ашиггүй материалын хувь (%)"
                 type="number"
                 min={0}
                 max={50}
@@ -194,7 +194,7 @@ export default function LayoutPlannerPage() {
                     wastePercentage: parseInt(e.target.value, 10) || 0,
                   }))
                 }
-                hint="Recommended: 10-15% straight, 15-20% diagonal"
+                hint="Санал болгосон: 10-15% тэгш, 15-20% диагональ чиглэлийн хувьд"
               />
             </div>
           </CardContent>
@@ -220,7 +220,7 @@ export default function LayoutPlannerPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold">Floor Preview</h3>
+                <h3 className="text-lg font-semibold">Шалны харагдац</h3>
                 <div className="flex items-center gap-2">
                   <Button
                     variant={floorPlan.view3D ? 'secondary' : 'outline'}
@@ -230,7 +230,7 @@ export default function LayoutPlannerPage() {
                     }
                   >
                     <IconCube size={14} className="mr-1.5" />
-                    3D View
+                    3D харагдац
                   </Button>
                   <Button
                     variant={!floorPlan.view3D ? 'secondary' : 'outline'}
@@ -240,7 +240,7 @@ export default function LayoutPlannerPage() {
                     }
                   >
                     <IconLayout2 size={14} className="mr-1.5" />
-                    2D Plan
+                    2D харагдац
                   </Button>
                   <Button
                     variant="outline"
@@ -253,7 +253,7 @@ export default function LayoutPlannerPage() {
                     }
                   >
                     <IconDownload size={14} className="mr-1.5" />
-                    Export PNG
+                    PNG болгон хадгалах
                   </Button>
                 </div>
               </div>
@@ -297,12 +297,12 @@ export default function LayoutPlannerPage() {
         <Card>
           <CardContent className="pt-6">
             <h3 className="mb-4 text-lg font-semibold">
-              Material Calculation Results
+              Материалын тооцоо
             </h3>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               <div className="rounded-lg bg-muted p-4">
                 <div className="mb-1 text-xs text-muted-foreground">
-                  Room Area
+                  Талбай (m²)
                 </div>
                 <div className="text-2xl font-bold">
                   {calculation.totalArea.toFixed(1)} m²
@@ -310,7 +310,7 @@ export default function LayoutPlannerPage() {
               </div>
               <div className="rounded-lg bg-muted p-4">
                 <div className="mb-1 text-xs text-muted-foreground">
-                  With Waste
+                  Алдагдсан материалыг бодсон талбай (m²)
                 </div>
                 <div className="text-2xl font-bold">
                   {calculation.areaWithWaste.toFixed(1)} m²
@@ -318,7 +318,7 @@ export default function LayoutPlannerPage() {
               </div>
               <div className="rounded-lg bg-muted p-4">
                 <div className="mb-1 text-xs text-muted-foreground">
-                  Tiles Needed
+                  Шаардлагатай хавтан
                 </div>
                 <div className="text-2xl font-bold text-primary">
                   {calculation.tilesNeeded}
@@ -326,14 +326,14 @@ export default function LayoutPlannerPage() {
               </div>
               <div className="rounded-lg bg-muted p-4">
                 <div className="mb-1 text-xs text-muted-foreground">
-                  Boxes Needed
+                  Хэрэглэгдэх хайрцагнууд
                 </div>
                 <div className="text-2xl font-bold text-primary">
                   {calculation.boxesNeeded}
                 </div>
               </div>
               <div className="rounded-lg bg-primary/10 p-4">
-                <div className="mb-1 text-xs text-primary">Total Cost</div>
+                <div className="mb-1 text-xs text-primary">Нийт өртөг</div>
                 <div className="text-2xl font-bold">
                   ₮{calculation.totalCost.toLocaleString()}
                 </div>

@@ -72,19 +72,19 @@ export default function ReportsPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Reports</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Тайлан</h1>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Visual analytics and insights for inventory management
+            Агуулахын удирдлагад зориулсан график шинжилгээ, үзүүлэлтүүд
           </p>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" onClick={handleExportPDF}>
             <IconFileExport className="size-4" />
-            <span>Export PDF</span>
+            <span>PDF болгон export хийх</span>
           </Button>
           <Button variant="secondary" onClick={handleExportExcel}>
             <IconTable className="size-4" />
-            <span>Export Excel</span>
+            <span>Excel болгон export хийх</span>
           </Button>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function ReportsPage() {
       {/* Monthly Transactions Chart */}
       <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
         <h3 className="text-base font-semibold text-foreground mb-6">
-          Monthly Stock Movements
+          Сар бүрийн нөөцийн хөдөлгөөн
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData.monthlyTransactions}>
@@ -108,8 +108,8 @@ export default function ReportsPage() {
               }}
             />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Bar dataKey="IN" fill="#22C27A" name="Stock In" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="OUT" fill="#E03E3E" name="Stock Out" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="IN" fill="#22C27A" name="Орсон нөөц" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="OUT" fill="#E03E3E" name="Гарсан нөөц" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -118,7 +118,7 @@ export default function ReportsPage() {
         {/* Material Type Distribution */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
           <h3 className="text-base font-semibold text-foreground mb-6">
-            Material Distribution by Type
+            Материалын төрлөөрх хуваарилалт
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -144,7 +144,7 @@ export default function ReportsPage() {
         {/* Stock Levels */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
           <h3 className="text-base font-semibold text-foreground mb-6">
-            Current Stock Levels vs. Threshold
+            Одоогийн нөөц ба доод түвшний харьцуулалт
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData.stockLevels} layout="vertical">
@@ -170,33 +170,33 @@ export default function ReportsPage() {
       {/* Summary Statistics */}
       <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
         <h3 className="text-base font-semibold text-foreground mb-4">
-          Summary Statistics
+          Хураангуй статистик
         </h3>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-            <div className="text-xs text-muted-foreground mb-1">Total Materials</div>
+            <div className="text-xs text-muted-foreground mb-1">Нийт материал</div>
             <div className="text-2xl font-bold tabular-nums text-foreground">
               {materials.length}
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-            <div className="text-xs text-muted-foreground mb-1">Total Stock (boxes)</div>
+            <div className="text-xs text-muted-foreground mb-1">Нийт нөөц (хайрцаг)</div>
             <div className="text-2xl font-bold tabular-nums text-foreground">
               {materials.reduce((sum, m) => sum + m.quantity, 0)}
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-            <div className="text-xs text-muted-foreground mb-1">Total Transactions</div>
+            <div className="text-xs text-muted-foreground mb-1">Нийт шилжүүлэг</div>
             <div className="text-2xl font-bold tabular-nums text-foreground">
               {transactions.length}
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-            <div className="text-xs text-muted-foreground mb-1">Total Inventory Value</div>
+            <div className="text-xs text-muted-foreground mb-1">Нийт агуулахын үнэ</div>
             <div className="text-2xl font-bold tabular-nums text-foreground">
               ₮{materials.reduce((sum, m) => sum + m.quantity * m.price, 0).toLocaleString()}
             </div>

@@ -28,10 +28,10 @@ export default function HomePage() {
     <div className="flex flex-col gap-8">
       <div className="space-y-1.5">
         <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          Dashboard
+          Нүүр цэс
         </h1>
         <p className="text-sm text-muted-foreground max-w-xl">
-          Welcome back! Here&apos;s an overview of your parquet flooring inventory.
+          Тавтай морил! Танай паркетын агуулахын тойм мэдээлэл энд байна.
         </p>
       </div>
 
@@ -39,25 +39,25 @@ export default function HomePage() {
         <Widget
           icon={<IconPackage size={22} />}
           value={stats.totalMaterials}
-          label="Total Materials"
+          label="Нийт материал"
           color="blue"
         />
         <Widget
           icon={<IconCircleCheck size={22} />}
           value={stats.inStock}
-          label="In Stock Items"
+          label="Бэлэн байгаа материал"
           color="green"
         />
         <Widget
           icon={<IconAlertTriangle size={22} />}
           value={stats.lowStock}
-          label="Low Stock Alerts"
+          label="Бараа дуусахад ойр"
           color="red"
         />
         <Widget
           icon={<IconArrowsSort size={22} />}
           value={stats.transactionsThisMonth}
-          label="Transactions This Month"
+          label="Энэ сард хийсэн шилжүүлэг"
           color="amber"
         />
       </div>
@@ -65,10 +65,10 @@ export default function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--theme-surface-shadow)] transition-shadow duration-200 hover:shadow-[var(--theme-card-hover)]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-            <h3 className="text-base font-semibold text-foreground">Low Stock Alerts</h3>
+            <h3 className="text-base font-semibold text-foreground">Нөөц багассан материал</h3>
             <Badge variant="low-stock" className="gap-1">
               <IconAlertTriangle className="size-3.5" />
-              {lowStockItems.length} items
+              {lowStockItems.length} материал
             </Badge>
           </div>
           <div className="p-5">
@@ -77,8 +77,8 @@ export default function HomePage() {
                 <div className="rounded-full bg-emerald-500/10 p-3 mb-3">
                   <IconCircleCheck className="size-6 text-emerald-600" />
                 </div>
-                <p className="text-sm font-medium text-foreground">All items in stock</p>
-                <p className="text-xs text-muted-foreground mt-0.5">No low stock alerts</p>
+                <p className="text-sm font-medium text-foreground">Бүх материал бэлэн байна</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Нөөц багассан материал алга</p>
               </div>
             ) : (
               lowStockItems.map(item => (
@@ -92,7 +92,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-semibold text-destructive">{item.quantity} boxes</div>
-                    <div className="text-xs text-muted-foreground">Min: {item.minThreshold}</div>
+                    <div className="text-xs text-muted-foreground">Хамгийн бага: {item.minThreshold}</div>
                   </div>
                 </div>
               ))
@@ -102,9 +102,9 @@ export default function HomePage() {
 
         <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--theme-surface-shadow)] transition-shadow duration-200 hover:shadow-[var(--theme-card-hover)]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-            <h3 className="text-base font-semibold text-foreground">Recent Transactions</h3>
+            <h3 className="text-base font-semibold text-foreground">Сүүлд хийсэн шилжүүлэг</h3>
             <Button asChild variant="secondary" size="sm">
-              <Link to="/transactions">View All</Link>
+              <Link to="/transactions">Бүгдийг харах</Link>
             </Button>
           </div>
           <div className="p-5">
@@ -127,7 +127,7 @@ export default function HomePage() {
                     <div className="text-xs text-muted-foreground">{transaction.date}</div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold">{transaction.quantity} boxes</div>
+                <div className="text-sm font-semibold">{transaction.quantity} хайрцаг</div>
               </div>
             ))}
           </div>
@@ -135,30 +135,30 @@ export default function HomePage() {
       </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--theme-surface-shadow)] p-6">
-        <h3 className="text-base font-semibold text-foreground">Quick Actions</h3>
+        <h3 className="text-base font-semibold text-foreground">Түргэн үйлдлүүд</h3>
         <div className="flex flex-wrap gap-3 mt-4">
           <Button asChild>
             <Link to="/inventory" className="inline-flex items-center gap-2">
               <IconPackage className="size-4" />
-              Manage Inventory
+              Агуулах удирдах
             </Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/planner" className="inline-flex items-center gap-2">
               <IconMap className="size-4" />
-              Layout Planner
+              Тооцоолуур
             </Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/transactions" className="inline-flex items-center gap-2">
               <IconReceipt className="size-4" />
-              Add Transaction
+              Шилжүүлэг нэмэх
             </Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/reports" className="inline-flex items-center gap-2">
               <IconChartBar className="size-4" />
-              View Reports
+              Тайлан харах
             </Link>
           </Button>
         </div>

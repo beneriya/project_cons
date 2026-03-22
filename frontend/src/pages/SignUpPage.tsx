@@ -47,10 +47,10 @@ export default function SignUpPage() {
               <div className="space-y-6">
                 <section className="space-y-3">
                   <h2 className="text-base font-bold tracking-tight text-foreground">
-                    FLOORING & WAREHOUSE MANAGEMENT
+                    ШАЛНЫ БОЛОН АГУУЛАХЫН УДИРДЛАГА
                   </h2>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Manage parquet materials, inventory, and floor layout planning.
+                    Паркетын материал, нөөцийн үлдэгдэл, шалны төлөвлөлтийг нэг дороос удирдаарай.
                   </p>
                 </section>
               </div>
@@ -60,37 +60,37 @@ export default function SignUpPage() {
           <div className="mx-auto flex w-full max-w-md flex-col gap-8">
             <div className="flex flex-col items-center gap-4 md:hidden">
               <h1 className="text-3xl font-bold tracking-tight text-foreground">ParquetPro</h1>
-              <p className="text-sm text-muted-foreground">Flooring & Warehouse Management</p>
+              <p className="text-sm text-muted-foreground">Шалны хувлагч ба агуулахын удирдлага</p>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-6">
                 <div className="group border-border/50 shadow-2xl shadow-black/10 backdrop-blur-xl transition-all duration-300 hover:shadow-primary/5 supports-[backdrop-filter]:bg-background/90 rounded-xl border bg-card/90">
                   <div className="space-y-3 text-center pb-6 pt-8 px-6">
-                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Create account</h2>
-                    <p className="text-base text-muted-foreground">Enter your details to get started</p>
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Бүртгэл үүсгэх</h2>
+                    <p className="text-base text-muted-foreground">Эхлээд мэдээллээ оруулж бүртгүүлнэ үү</p>
                   </div>
                   <div className="px-6 pb-8">
                     <div className="space-y-5">
                       <Input
-                        label="Name"
+                        label="Нэр"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Enter your name"
+                        placeholder="Өөрийн нэрээ оруулна уу"
                         required
                         className="h-11"
                       />
                       <Input
-                        label="Email"
+                        label="И-мэйл"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
+                        placeholder="И-мэйл хаягаа оруулна уу"
                         required
                         className="h-11"
                       />
                       <Input
-                        label="Password"
+                        label="Нууц үг"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -99,7 +99,7 @@ export default function SignUpPage() {
                         className="h-11"
                       />
                       <Input
-                        label="Confirm password"
+                        label="Нууц үгээ давтан оруулах"
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -114,13 +114,13 @@ export default function SignUpPage() {
                         className="w-full h-11 text-base font-semibold shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
                         disabled={submitting}
                       >
-                        {submitting ? '...' : 'Create account'}
+                        {submitting ? '...' : 'Бүртгэл үүсгэх'}
                       </Button>
                     </div>
                     <p className="mt-6 text-sm text-muted-foreground text-center">
-                      Already have an account?{' '}
+                      Аль хэдийн бүртгэлтэй юу?{' '}
                       <Link to="/login" className="text-primary font-medium hover:underline underline-offset-4">
-                        Sign in
+                        Нэвтрэх
                       </Link>
                     </p>
                   </div>

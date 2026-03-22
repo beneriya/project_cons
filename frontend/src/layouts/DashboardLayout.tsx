@@ -14,12 +14,12 @@ import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
 
 const PATH_LABELS: Record<string, string> = {
-  '': 'Dashboard',
-  inventory: 'Inventory',
-  alerts: 'Alerts',
-  planner: 'Planner',
-  transactions: 'Transactions',
-  reports: 'Reports',
+  '': 'Хяналтын самбар',
+  inventory: 'Агуулах',
+  alerts: 'Сэрэмжлүүлэг',
+  planner: 'Байршлын төлөвлөгч',
+  transactions: 'Гүйлгээ',
+  reports: 'Тайлангууд',
 }
 
 export default function DashboardLayout() {
@@ -35,7 +35,7 @@ export default function DashboardLayout() {
         <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
           <div>
             <div className="font-semibold text-sidebar-foreground">ParquetPro</div>
-            <div className="text-xs text-muted-foreground">MANAGEMENT SYSTEM</div>
+            <div className="text-xs text-muted-foreground">Хяналтын систем</div>
           </div>
         </div>
         <div className="flex-1 overflow-auto">
@@ -51,7 +51,7 @@ export default function DashboardLayout() {
         >
           <div className="flex h-14 shrink-0 items-center gap-2 border-b border-sidebar-border px-4">
             <div className="font-semibold text-sidebar-foreground">ParquetPro</div>
-            <div className="text-xs text-muted-foreground">MANAGEMENT SYSTEM</div>
+            <div className="text-xs text-muted-foreground">Хяналтын систем</div>
           </div>
           <div className="flex-1 overflow-auto p-2" onClick={() => setMobileOpen(false)}>
             <NavMain />

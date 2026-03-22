@@ -17,17 +17,17 @@ const STANDARD_M2_PER_PIECE = M2_PER_BOX / PIECES_PER_BOX
 // ----- calculateMaterials -----
 
 describe('calculateMaterials', () => {
-  it('computes total area from width and height', () => {
+  it('ний талбайг тооцоолох', () => {
     const r = calculateMaterials(4, 5, 2.4, 12, 50, 10, 'straight-h')
     expect(r.totalArea).toBe(20)
   })
 
-  it('applies waste percent to area with waste', () => {
+  it('хаягдалтай хэсэгт хаягдлын хувийг илүүтгэх боломжтой', () => {
     const r = calculateMaterials(10, 10, 2.4, 12, 50, 10, 'straight-h')
     expect(r.areaWithWaste).toBe(100 * 1.1)
   })
 
-  it('adds pattern waste bonus for diagonal', () => {
+  it('Диагональ хэсэгт хаягдлын хувийг илүүтгэх боломжтой', () => {
     const straight = calculateMaterials(10, 10, 2.4, 12, 50, 5, 'straight-h').areaWithWaste
     const diag = calculateMaterials(10, 10, 2.4, 12, 50, 5, 'diagonal').areaWithWaste
     expect(diag).toBeGreaterThan(straight)

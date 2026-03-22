@@ -42,10 +42,10 @@ export function calculateMaterials(
 }
 
 export const ROOM_PRESETS = [
-  { label: 'Square (4×4)', width: 4, height: 4 },
-  { label: 'Living Room (5×4)', width: 5, height: 4 },
-  { label: 'Bedroom (4×3)', width: 4, height: 3 },
-  { label: 'Hallway (8×1.5)', width: 8, height: 1.5 },
+  { label: 'Дөрвөлжин (4×4)', width: 4, height: 4 },
+  { label: 'Зочны өрөө (5×4)', width: 5, height: 4 },
+  { label: 'Унтлагын өрөө (4×3)', width: 4, height: 3 },
+  { label: 'Танхимын өрөө (8×1.5)', width: 8, height: 1.5 },
 ] as const
 
 /** Plank layout for visualization - position, size, rotation, cut info */

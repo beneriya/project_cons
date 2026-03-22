@@ -10,12 +10,12 @@ import {
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: IconLayoutDashboard },
-  { to: '/inventory', label: 'Inventory', icon: IconPackage },
-  { to: '/alerts', label: 'Alerts', icon: IconAlertTriangle },
-  { to: '/planner', label: 'Planner', icon: IconMap },
-  { to: '/transactions', label: 'Transactions', icon: IconReceipt },
-  { to: '/reports', label: 'Reports', icon: IconChartBar },
+  { to: '/', label: 'Хяналтын самбар', icon: IconLayoutDashboard },
+  { to: '/inventory', label: 'Агуулах', icon: IconPackage },
+  { to: '/alerts', label: 'Сэрэмжлүүлэг', icon: IconAlertTriangle },
+  { to: '/planner', label: 'Байршлын төлөвлөгч', icon: IconMap },
+  { to: '/transactions', label: 'Гүйлгээ', icon: IconReceipt },
+  { to: '/reports', label: 'Тайлангууд', icon: IconChartBar },
 ]
 
 export function NavMain() {

@@ -19,10 +19,10 @@ export default function AlertsPage() {
     <div className="flex flex-col gap-8">
       <div className="space-y-1.5">
         <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          Stock Alerts
+          Нөөцийн сэрэмжлүүлэг
         </h1>
         <p className="text-sm text-muted-foreground max-w-xl">
-          Monitor low stock and out of stock materials
+          Нөөц дууссан болон дуусахад ойр материалуудыг хянах
         </p>
       </div>
 
@@ -38,7 +38,7 @@ export default function AlertsPage() {
           <div className="text-2xl font-bold tabular-nums text-destructive">
             {alerts.outOfStock.length}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">Out of Stock</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Нөөц дууссан</div>
         </div>
 
         <div className="rounded-xl border border-border bg-card p-6 border-l-4 border-l-amber-500 shadow-[var(--theme-surface-shadow)] transition-all duration-200 hover:shadow-[var(--theme-card-hover)]">
@@ -51,7 +51,7 @@ export default function AlertsPage() {
           <div className="text-2xl font-bold tabular-nums text-amber-600">
             {alerts.lowStock.length}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">Low Stock</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Нөөц багассан</div>
         </div>
 
         <div className="rounded-xl border border-border bg-card p-6 border-l-4 border-l-primary shadow-[var(--theme-surface-shadow)] transition-all duration-200 hover:shadow-[var(--theme-card-hover)]">
@@ -64,7 +64,7 @@ export default function AlertsPage() {
           <div className="text-2xl font-bold tabular-nums text-primary">
             {alerts.critical.length}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">Critical Level</div>
+          <div className="text-sm text-muted-foreground mt-0.5">Эрсдэлтэй түвшинд байна</div>
         </div>
       </div>
 
@@ -77,9 +77,9 @@ export default function AlertsPage() {
             </div>
             <div>
               <h3 className="text-base font-semibold text-foreground">
-                Out of Stock Materials
+                Нөөц дууссан материал
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">These items need immediate restocking</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Яаралтай дахин захиалах шаардлагатай</p>
             </div>
           </div>
 
@@ -93,17 +93,17 @@ export default function AlertsPage() {
                   <div className="flex items-center gap-3 flex-wrap">
                     <Badge variant="out-of-stock" className="gap-1 shrink-0">
                       <IconCircleX className="size-3.5" />
-                      OUT OF STOCK
+                      НӨӨЦ ДУУССАН
                     </Badge>
                     <span className="font-medium text-sm text-foreground">{material.name}</span>
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    Type: {material.type} • Min threshold: {material.minThreshold} boxes
+                    Төрөл: {material.type} • Доод түвшин: {material.minThreshold} хайрцаг
                   </div>
                 </div>
                 <Button variant="danger" size="sm" className="shrink-0 ml-4">
                   <IconShoppingCart className="size-3.5 mr-1.5" />
-                  Order Now
+                  Шууд захиалах
                 </Button>
               </div>
             ))}
@@ -120,9 +120,9 @@ export default function AlertsPage() {
             </div>
             <div>
               <h3 className="text-base font-semibold text-foreground">
-                Low Stock Warnings
+                Нөөц багассан анхааруулга
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">Stock levels below minimum threshold</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Доод түвшнээс доош орсон нөөц</p>
             </div>
           </div>
 
@@ -144,19 +144,19 @@ export default function AlertsPage() {
                         {isCritical ? (
                           <>
                             <IconAlertCircle className="size-3.5" />
-                            CRITICAL
+                            КРИТИК
                           </>
                         ) : (
                           <>
                             <IconAlertTriangle className="size-3.5" />
-                            LOW STOCK
+                            НӨӨЦ БАГАСАЖ БАЙНА
                           </>
                         )}
                       </Badge>
                       <span className="font-medium text-sm text-foreground">{material.name}</span>
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
-                      Current: {material.quantity} boxes • Min: {material.minThreshold} boxes • Type: {material.type}
+                      Одоо: {material.quantity} хайрцаг • Доод: {material.minThreshold} хайрцаг • Төрөл: {material.type}
                     </div>
                     <div className="mt-2 max-w-xs">
                       <div className="h-1.5 bg-muted rounded-full overflow-hidden">
@@ -171,9 +171,9 @@ export default function AlertsPage() {
                   </div>
                   <div className="ml-4 text-right shrink-0">
                     <div className="text-sm font-semibold text-amber-600">
-                      {material.minThreshold - material.quantity} boxes
+                      {material.minThreshold - material.quantity} хайрцаг
                     </div>
-                    <div className="text-xs text-muted-foreground">needed</div>
+                    <div className="text-xs text-muted-foreground">шаардлагатай</div>
                   </div>
                 </div>
               )
@@ -191,10 +191,10 @@ export default function AlertsPage() {
             </div>
             <div className="space-y-1">
               <h3 className="text-xl font-bold text-foreground">
-                All Stock Levels Healthy
+                Бүх нөөц хэвийн түвшинд байна
               </h3>
               <p className="text-sm text-muted-foreground">
-                No materials are currently below minimum threshold
+                Одоогоор доод түвшнээс доош орсон материал алга
               </p>
             </div>
           </div>

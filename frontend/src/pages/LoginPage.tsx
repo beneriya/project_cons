@@ -48,19 +48,19 @@ export default function LoginPage() {
               <div className="space-y-6">
                 <section className="space-y-3">
                   <h2 className="text-base font-bold tracking-tight text-foreground">
-                    FLOORING & WAREHOUSE MANAGEMENT
+                    Паркет-н шалны хувьлагч ба агуулахын удирдлага
                   </h2>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Manage parquet materials, inventory levels, transactions, and floor layout planning in one place.
+                    Паркетын материал, нөөцийн үлдэгдэл, шилжүүлэг болон шалны төлөвлөлтийг нэг дороос удирдаарай.
                   </p>
                 </section>
                 <div className="h-px bg-linear-to-r from-transparent via-border to-transparent" />
                 <section className="space-y-3">
                   <h2 className="text-base font-bold tracking-tight text-foreground">
-                    KEY FEATURES
+                    ГОЛ БОЛОМЖУУД
                   </h2>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Real-time inventory alerts, transaction tracking, SVG floor planner with patterns, and export capabilities.
+                    Бодит цагийн нөөцийн сэрэмжлүүлэг, шилжүүлгийн бүртгэл, шалны төлөвлөгч, файл болгон export хийх боломжтой.
                   </p>
                 </section>
               </div>
@@ -74,7 +74,7 @@ export default function LoginPage() {
                 ParquetPro
               </h1>
               <p className="text-sm text-muted-foreground">
-                Flooring & Warehouse Management
+                Паркет-н шалны хувьлагч ба агуулахын удирдлага
               </p>
             </div>
 
@@ -83,16 +83,16 @@ export default function LoginPage() {
                 <div className="group rounded-xl border border-border/50 bg-card/90 shadow-2xl shadow-black/10 backdrop-blur-xl transition-all duration-300 hover:shadow-primary/5 supports-[backdrop-filter]:bg-background/90">
                   <div className="space-y-3 text-center px-6 pt-8 pb-6">
                     <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                      Welcome back
+                      Тавтай морил
                     </h2>
                     <p className="text-base text-muted-foreground">
-                      Sign in with your account
+                      Өөрийн бүртгэлээр нэвтэрнэ үү
                     </p>
                   </div>
                   <div className="px-6 pb-8">
                     <div className="space-y-5">
                       <Input
-                        label="Email"
+                        label="И-мэйл"
                         type="email"
                         placeholder="admin@parquet.com"
                         value={email}
@@ -102,7 +102,7 @@ export default function LoginPage() {
                         className="h-11"
                       />
                       <Input
-                        label="Password"
+                        label="Нууц үг"
                         type="password"
                         placeholder="••••••••"
                         value={password}
@@ -117,17 +117,17 @@ export default function LoginPage() {
                         className="w-full h-11 text-base font-semibold shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
                         disabled={submitting}
                       >
-                        {submitting ? 'Signing in...' : 'Sign In'}
+                        {submitting ? 'Нэвтэрч байна…' : 'Нэвтрэх'}
                       </Button>
                     </div>
                     <div className="mt-6 rounded-xl bg-muted/60 p-4 sm:p-5">
                       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
-                        Demo accounts
+                        Демо бүртгэлүүд
                       </div>
                       <div className="text-xs text-muted-foreground leading-relaxed space-y-1.5">
-                        <p>Admin: admin@parquet.com / admin123</p>
-                        <p>Worker: worker@parquet.com / worker123</p>
-                        <p>Buyer: buyer@parquet.com / buyer123</p>
+                        <p>Админ: admin@parquet.com / admin123</p>
+                        <p>Ажилтан: worker@parquet.com / worker123</p>
+                        <p>Худалдан авагч: buyer@parquet.com / buyer123</p>
                       </div>
                     </div>
                   </div>
@@ -136,9 +136,9 @@ export default function LoginPage() {
             </form>
 
             <p className="mt-6 text-sm text-muted-foreground text-center">
-              Don&apos;t have an account?{' '}
+              Бүртгэлгүй байна уу?{' '}
               <Link to="/signup" className="text-primary font-medium hover:underline underline-offset-4">
-                Sign up
+                Шинээр бүртгүүлэх
               </Link>
             </p>
           </div>

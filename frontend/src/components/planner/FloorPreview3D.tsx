@@ -305,13 +305,13 @@ export function FloorPreview3D({
       <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap gap-3 rounded-lg bg-black/60 px-3 py-2 text-xs text-white/90 backdrop-blur-sm">
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-4 rounded bg-[#a08060]" />
-          Full planks: {fullCount}
+          Нийт паркет: {fullCount}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-4 rounded bg-[#c44242]" />
-          Cut (waste): {cutCount}
+          Тайрагдсан: {cutCount}
         </span>
-        <span className="text-white/60">• Drag to rotate • Right-drag to pan • Scroll to zoom</span>
+        <span className="text-white/60">• Эргүүлэхийн тулд чирнэ үү • Mouse2 чиглэл өөрчлөх • Томруулахын тулд гүйлгэх</span>
       </div>
     </div>
   )

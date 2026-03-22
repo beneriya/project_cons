@@ -12,7 +12,7 @@ import { DataTable } from '@/components/data-table'
 const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: 'date',
-    header: 'Date',
+    header: 'Огноо',
     cell: ({ row }) =>
       new Date(row.original.date).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -22,7 +22,7 @@ const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'materialName',
-    header: 'Material',
+    header: 'Материал',
     cell: ({ row }) => (
       <div>
         <div className="font-medium">{row.original.materialName}</div>
@@ -31,7 +31,7 @@ const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'type',
-    header: 'Type',
+    header: 'Төрөл',
     cell: ({ row }) => (
       <Badge variant={row.original.type === 'IN' ? 'in' : 'out'} className="gap-1">
         {row.original.type === 'IN' ? (
@@ -45,7 +45,7 @@ const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'quantity',
-    header: 'Quantity',
+    header: 'Тоо хэмжээ',
     cell: ({ row }) => (
       <span
         className={`font-semibold ${
@@ -53,13 +53,13 @@ const columns: ColumnDef<Transaction>[] = [
         }`}
       >
         {row.original.type === 'IN' ? '+' : '-'}
-        {row.original.quantity} boxes
+        {row.original.quantity} хайрцаг
       </span>
     ),
   },
   {
     accessorKey: 'notes',
-    header: 'Notes',
+    header: 'Тэмдэглэл',
     cell: ({ row }) => (
       <span className="text-muted-foreground">
         {row.original.notes || '—'}
@@ -101,14 +101,14 @@ export default function TransactionsPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Transactions</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Шилжүүлэг</h1>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Track all stock movements and inventory changes
+            Нөөцийн бүх хөдөлгөөн, агуулахын өөрчлөлтийг бүртгэнэ
           </p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
           <IconPlus className="size-4" />
-          <span>Add Transaction</span>
+          <span>Шилжүүлэг нэмэх</span>
         </Button>
       </div>
 
@@ -117,25 +117,25 @@ export default function TransactionsPage() {
         data={transactions}
         loading={loading}
         searchColumn="materialName"
-        searchPlaceholder="Search by material..."
+        searchPlaceholder="Материалаар хайх..."
       />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Transaction</DialogTitle>
+            <DialogTitle>Шинэ шилжүүлэг нэмэх</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <Select
-              label="Material"
+              label="Материал"
               value={formData.materialId}
               onChange={(e) =>
                 setFormData({ ...formData, materialId: e.target.value })
               }
               required
             >
-              <option value="">Select a material...</option>
+              <option value="">Материал сонгоно уу...</option>
               {materials.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.name} ({m.quantity} boxes available)
@@ -144,7 +144,7 @@ export default function TransactionsPage() {
             </Select>
 
             <Select
-              label="Transaction Type"
+              label="Шилжүүлгийн төрөл"
               value={formData.type}
               onChange={(e) =>
                 setFormData({
@@ -154,12 +154,12 @@ export default function TransactionsPage() {
               }
               required
             >
-              <option value="IN">IN — Stock Received</option>
-              <option value="OUT">OUT — Stock Used</option>
+              <option value="IN">IN — Нөөц орсон</option>
+              <option value="OUT">OUT — Нөөц гарсан</option>
             </Select>
 
             <Input
-              label="Quantity (boxes)"
+              label="Тоо хэмжээ (хайрцаг)"
               type="number"
               min={1}
               placeholder="10"
@@ -171,7 +171,7 @@ export default function TransactionsPage() {
             />
 
             <Textarea
-              label="Notes (optional)"
+              label="Тэмдэглэл (заавал биш)"
               rows={3}
               placeholder="Additional remarks..."
               value={formData.notes}
@@ -186,9 +186,9 @@ export default function TransactionsPage() {
                 variant="outline"
                 onClick={() => setIsModalOpen(false)}
               >
-                Cancel
+                Болих
               </Button>
-              <Button type="submit">Add Transaction</Button>
+              <Button type="submit">Шилжүүлэг нэмэх</Button>
             </div>
           </form>
         </DialogContent>

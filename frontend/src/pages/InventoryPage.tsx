@@ -15,42 +15,42 @@ function createColumns(
   return [
     {
       accessorKey: 'name',
-      header: 'Material',
+      header: 'Материал',
       cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
     },
     {
       accessorKey: 'type',
-      header: 'Type',
+      header: 'Төрөл',
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.original.type}</span>
       ),
     },
     {
       accessorKey: 'm2PerBox',
-      header: 'm²/Box',
+      header: 'm²/хайрцаг',
       cell: ({ row }) => `${row.original.m2PerBox} m²`,
     },
     {
       accessorKey: 'quantity',
-      header: 'Boxes',
+      header: 'Хайрцаг',
     },
     {
       accessorKey: 'price',
-      header: 'Price',
+      header: 'Үнэ',
       cell: ({ row }) => `₮${row.original.price.toLocaleString()}`,
     },
     {
       id: 'status',
-      header: 'Status',
+      header: 'Төлөв',
       cell: ({ row }) => {
         const m = row.original
         if (m.quantity === 0) {
-          return <Badge variant="out-of-stock">Out of Stock</Badge>
+          return <Badge variant="out-of-stock">НӨӨЦ ДУУССАН</Badge>
         }
         if (m.quantity <= m.minThreshold) {
-          return <Badge variant="low-stock">Low Stock</Badge>
+          return <Badge variant="low-stock">НӨӨЦ БАГАСАЖ БАЙНА</Badge>
         }
-        return <Badge variant="in-stock">In Stock</Badge>
+        return <Badge variant="in-stock">БЭЛЭН</Badge>
       },
     },
     {
@@ -62,7 +62,7 @@ function createColumns(
             variant="ghost"
             size="icon"
             onClick={() => onEdit(row.original)}
-            title="Edit"
+            title="Засах"
           >
             <IconPencil className="size-4" />
           </Button>
@@ -70,7 +70,7 @@ function createColumns(
             variant="ghost"
             size="icon"
             onClick={() => onDelete(row.original.id)}
-            title="Delete"
+            title="Устгах"
             className="text-destructive hover:bg-destructive/10"
           >
             <IconTrash className="size-4" />
@@ -162,14 +162,14 @@ export default function InventoryPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Inventory</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Агуулах</h1>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Manage your parquet flooring materials and stock levels
+            Паркетын материал, нөөцийн үлдэгдлийг эндээс удирдана
           </p>
         </div>
         <Button onClick={() => handleOpenModal()}>
           <IconPlus className="size-4" />
-          <span>Add Material</span>
+          <span>Материал нэмэх</span>
         </Button>
       </div>
 
@@ -178,21 +178,21 @@ export default function InventoryPage() {
         data={materials}
         loading={loading}
         searchColumn="name"
-        searchPlaceholder="Search materials..."
+        searchPlaceholder="Материалаар хайх..."
       />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-4xl sm:max-w-4xl">
           <DialogHeader>
             <DialogTitle>
-              {editingMaterial ? 'Edit Material' : 'Add New Material'}
+              {editingMaterial ? 'Материал засах' : 'Шинэ материал нэмэх'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <div className="grid grid-cols-2 gap-4 items-start">
               <Input
-                label="Material Name"
-                placeholder="e.g. Oak Parquet Classic"
+                label="Материалын нэр"
+                placeholder="Жишээ нь: Oak Parquet Classic"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -200,7 +200,7 @@ export default function InventoryPage() {
                 required
               />
               <Select
-                label="Material Type"
+                label="Материалын төрөл"
                 value={formData.type}
                 onChange={(e) =>
                   setFormData({
@@ -210,15 +210,15 @@ export default function InventoryPage() {
                 }
                 required
               >
-                <option value="Laminate">Laminate Parquet</option>
-                <option value="Solid Wood">Solid Wood Parquet</option>
-                <option value="Engineered">Engineered Wood</option>
+                <option value="Laminate">Ламинат паркет</option>
+                <option value="Solid Wood">Бүтэн модон паркет</option>
+                <option value="Engineered">Инженер мод</option>
                 <option value="SPC">SPC / WPC</option>
               </Select>
             </div>
             <div className="grid grid-cols-3 gap-4 items-start">
               <Input
-                label="m² per Box"
+                label="m² / хайрцаг"
                 type="number"
                 step="0.1"
                 placeholder="2.4"
@@ -229,7 +229,7 @@ export default function InventoryPage() {
                 required
               />
               <Input
-                label="Pieces per Box"
+                label="Ширхэг / хайрцаг"
                 type="number"
                 placeholder="12"
                 value={formData.piecesPerBox}
@@ -239,7 +239,7 @@ export default function InventoryPage() {
                 required
               />
               <Input
-                label="Current Quantity"
+                label="Одоогийн үлдэгдэл"
                 type="number"
                 placeholder="48"
                 value={formData.quantity}
@@ -251,7 +251,7 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-4 items-start">
               <Input
-                label="Price (₮)"
+                label="Үнэ (₮)"
                 type="number"
                 placeholder="24500"
                 value={formData.price}
@@ -261,14 +261,14 @@ export default function InventoryPage() {
                 required
               />
               <Input
-                label="Minimum Threshold"
+                label="Доод түвшин"
                 type="number"
                 placeholder="10"
                 value={formData.minThreshold}
                 onChange={(e) =>
                   setFormData({ ...formData, minThreshold: e.target.value })
                 }
-                hint="Alert when stock falls below this level"
+                hint="Нөөц энэ түвшнээс доош ороход сэрэмжлүүлнэ"
                 required
               />
             </div>
@@ -278,10 +278,10 @@ export default function InventoryPage() {
                 variant="outline"
                 onClick={() => setIsModalOpen(false)}
               >
-                Cancel
+                Болих
               </Button>
               <Button type="submit">
-                {editingMaterial ? 'Update' : 'Add Material'}
+                {editingMaterial ? 'Материал шинэчлэх' : 'Материал нэмэх'}
               </Button>
             </div>
           </form>
