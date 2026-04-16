@@ -144,7 +144,7 @@ export default function AlertsPage() {
                         {isCritical ? (
                           <>
                             <IconAlertCircle className="size-3.5" />
-                            КРИТИК
+                            Эрсдэлтэй
                           </>
                         ) : (
                           <>

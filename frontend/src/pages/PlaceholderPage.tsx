@@ -13,7 +13,7 @@ export default function PlaceholderPage() {
   return (
     <div className="mb-6">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
-      <p className="text-[0.9375rem] text-muted-foreground mt-1">This page is coming soon.</p>
+      <p className="text-[0.9375rem] text-muted-foreground mt-1">Энэ хуудас үргэлжлэх болно.</p>
     </div>
   )
 }

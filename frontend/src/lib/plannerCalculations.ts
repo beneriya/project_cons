@@ -1,17 +1,17 @@
-export type LayoutPattern = 'straight-h' | 'straight-v' | 'diagonal'
+export type LayoutPattern = 'straight-h' | 'straight-v' | 'diagonal' 
 
-export interface PlannerResult {
-  totalArea: number
-  areaWithWaste: number
-  tilesNeeded: number
-  boxesNeeded: number
-  totalCost: number
+export interface PlannerResult { 
+  totalArea: number 
+  areaWithWaste: number 
+  tilesNeeded: number 
+  boxesNeeded: number 
+  totalCost: number 
 }
 
 const PATTERN_WASTE_BONUS: Record<LayoutPattern, number> = {
-  'straight-h': 0,
-  'straight-v': 0,
-  diagonal: 10,
+  'straight-h': 0, 
+  'straight-v': 0, 
+  diagonal: 10, 
 }
 
 export function calculateMaterials(
