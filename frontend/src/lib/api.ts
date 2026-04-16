@@ -178,4 +178,34 @@ export const api = {
   async getDashboard() {
     return fetchApi<Record<string, unknown>>('/dashboard')
   },
+
+  async optimizeLayout(data: { width_m: number; height_m: number; waste_percentage: number }) {
+    return fetchApi<{
+      required_area_m2: number
+      waste_percentage: number
+      area_with_waste_m2: number
+      naive_material_id: string
+      naive_material_name: string
+      naive_boxes: number
+      naive_cost: number
+      naive_m2_covered: number
+      optimized_allocations: {
+        material_id: string
+        material_name: string
+        boxes: number
+        m2_covered: number
+        cost: number
+        price_per_box: number
+        m2_per_box: number
+      }[]
+      optimized_total_cost: number
+      optimized_total_m2: number
+      optimized_total_boxes: number
+      cost_savings: number
+      savings_percentage: number
+    }>('/layout/optimize', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  },
 }
