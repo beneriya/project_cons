@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useApp } from '../context/appContext'
 import { Button } from '../components/Button'
-import { FileDown, FileSpreadsheet } from 'lucide-react'
+import { IconFileExport, IconTable } from '@tabler/icons-react'
 import {
   BarChart,
   Bar,
@@ -69,32 +69,30 @@ export default function ReportsPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-['Syne'] text-[48px] font-extrabold text-[#0B1E3D] leading-tight">
-            Reports
-          </h1>
-          <p className="text-[#8A93A8] mt-2">
-            Visual analytics and insights for inventory management
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1.5">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Тайлан</h1>
+          <p className="text-sm text-muted-foreground max-w-xl">
+            Агуулахын удирдлагад зориулсан график шинжилгээ, үзүүлэлтүүд
           </p>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" onClick={handleExportPDF}>
-            <FileDown size={16} className="mr-2" />
-            Export PDF
+            <IconFileExport className="size-4" />
+            <span>PDF болгон export хийх</span>
           </Button>
           <Button variant="secondary" onClick={handleExportExcel}>
-            <FileSpreadsheet size={16} className="mr-2" />
-            Export Excel
+            <IconTable className="size-4" />
+            <span>Excel болгон export хийх</span>
           </Button>
         </div>
       </div>
 
       {/* Monthly Transactions Chart */}
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6 mb-6">
-        <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-6">
-          Monthly Stock Movements
+      <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
+        <h3 className="text-base font-semibold text-foreground mb-6">
+          Сар бүрийн нөөцийн хөдөлгөөн
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData.monthlyTransactions}>
@@ -110,17 +108,17 @@ export default function ReportsPage() {
               }}
             />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Bar dataKey="IN" fill="#22C27A" name="Stock In" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="OUT" fill="#E03E3E" name="Stock Out" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="IN" fill="#22C27A" name="Орсон нөөц" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="OUT" fill="#E03E3E" name="Гарсан нөөц" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Material Type Distribution */}
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-          <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-6">
-            Material Distribution by Type
+        <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
+          <h3 className="text-base font-semibold text-foreground mb-6">
+            Материалын төрлөөрх хуваарилалт
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -134,7 +132,7 @@ export default function ReportsPage() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {chartData.typeDistribution.map((entry, index) => (
+                {chartData.typeDistribution.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -144,9 +142,9 @@ export default function ReportsPage() {
         </div>
 
         {/* Stock Levels */}
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-          <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-6">
-            Current Stock Levels vs. Threshold
+        <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
+          <h3 className="text-base font-semibold text-foreground mb-6">
+            Одоогийн нөөц ба доод түвшний харьцуулалт
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData.stockLevels} layout="vertical">
@@ -170,36 +168,36 @@ export default function ReportsPage() {
       </div>
 
       {/* Summary Statistics */}
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] p-6">
-        <h3 className="font-['Syne'] text-lg font-semibold text-[#0B1E3D] mb-4">
-          Summary Statistics
+      <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--theme-surface-shadow)]">
+        <h3 className="text-base font-semibold text-foreground mb-4">
+          Хураангуй статистик
         </h3>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 bg-[#F4F6FA] rounded-lg">
-            <div className="text-xs text-[#8A93A8] mb-1">Total Materials</div>
-            <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+            <div className="text-xs text-muted-foreground mb-1">Нийт материал</div>
+            <div className="text-2xl font-bold tabular-nums text-foreground">
               {materials.length}
             </div>
           </div>
 
-          <div className="p-4 bg-[#F4F6FA] rounded-lg">
-            <div className="text-xs text-[#8A93A8] mb-1">Total Stock (boxes)</div>
-            <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+            <div className="text-xs text-muted-foreground mb-1">Нийт нөөц (хайрцаг)</div>
+            <div className="text-2xl font-bold tabular-nums text-foreground">
               {materials.reduce((sum, m) => sum + m.quantity, 0)}
             </div>
           </div>
 
-          <div className="p-4 bg-[#F4F6FA] rounded-lg">
-            <div className="text-xs text-[#8A93A8] mb-1">Total Transactions</div>
-            <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+            <div className="text-xs text-muted-foreground mb-1">Нийт шилжүүлэг</div>
+            <div className="text-2xl font-bold tabular-nums text-foreground">
               {transactions.length}
             </div>
           </div>
 
-          <div className="p-4 bg-[#F4F6FA] rounded-lg">
-            <div className="text-xs text-[#8A93A8] mb-1">Total Inventory Value</div>
-            <div className="font-['Syne'] text-2xl font-bold text-[#0B1E3D]">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+            <div className="text-xs text-muted-foreground mb-1">Нийт агуулахын үнэ</div>
+            <div className="text-2xl font-bold tabular-nums text-foreground">
               ₮{materials.reduce((sum, m) => sum + m.quantity * m.price, 0).toLocaleString()}
             </div>
           </div>

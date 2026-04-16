@@ -7,10 +7,10 @@
 cd frontend
 
 # 2. Dependencies суулгах (эхний удаа)
-npm install
+bun install
 
 # 3. Хөгжүүлэлтийн сервер асаах
-npm run dev
+bun run dev
 ```
 
 Дараа нь browser дээр **http://localhost:5173** нээнэ.
@@ -20,6 +20,6 @@ npm run dev
 
 ## Бусад тушаалууд
 
-- `npm run build` — Production build үүсгэнэ
-- `npm run preview` — Build-ийг локал дээр туршина
-- `npm run lint` — ESLint ажиллуулна
+- `bun run build` — Production build үүсгэнэ
+- `bun run preview` — Build-ийг локал дээр туршина
+- `bun run lint` — ESLint ажиллуулна

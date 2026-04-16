@@ -1,13 +1,75 @@
 import { useState } from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
 import { useApp } from '../context/appContext'
+import type { Transaction } from '../context/appContextCore'
 import { Button } from '../components/Button'
 import { Badge } from '../components/Badge'
-import { Select, Textarea, Input } from '../components/Input'
-import { Plus } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog'
+import { Input, Select, Textarea } from '../components/Input'
+import { IconPlus, IconArrowUp, IconArrowDown } from '@tabler/icons-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DataTable } from '@/components/data-table'
+
+const columns: ColumnDef<Transaction>[] = [
+  {
+    accessorKey: 'date',
+    header: 'Огноо',
+    cell: ({ row }) =>
+      new Date(row.original.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+  },
+  {
+    accessorKey: 'materialName',
+    header: 'Материал',
+    cell: ({ row }) => (
+      <div>
+        <div className="font-medium">{row.original.materialName}</div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'type',
+    header: 'Төрөл',
+    cell: ({ row }) => (
+      <Badge variant={row.original.type === 'IN' ? 'in' : 'out'} className="gap-1">
+        {row.original.type === 'IN' ? (
+          <IconArrowUp className="size-3.5" />
+        ) : (
+          <IconArrowDown className="size-3.5" />
+        )}
+        {row.original.type}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: 'quantity',
+    header: 'Тоо хэмжээ',
+    cell: ({ row }) => (
+      <span
+        className={`font-semibold ${
+          row.original.type === 'IN' ? 'text-emerald-600' : 'text-red-600'
+        }`}
+      >
+        {row.original.type === 'IN' ? '+' : '-'}
+        {row.original.quantity} хайрцаг
+      </span>
+    ),
+  },
+  {
+    accessorKey: 'notes',
+    header: 'Тэмдэглэл',
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">
+        {row.original.notes || '—'}
+      </span>
+    ),
+  },
+]
 
 export default function TransactionsPage() {
-  const { materials, transactions, addTransaction } = useApp()
+  const { materials, transactions, addTransaction, loading } = useApp()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     materialId: '',
@@ -16,130 +78,65 @@ export default function TransactionsPage() {
     notes: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const material = materials.find(m => m.id === formData.materialId)
+    const material = materials.find((m) => m.id === formData.materialId)
     if (!material) return
-
-    addTransaction({
-      materialId: formData.materialId,
-      materialName: material.name,
-      type: formData.type,
-      quantity: parseInt(formData.quantity, 10),
-      notes: formData.notes || undefined,
-    })
-
-    setIsModalOpen(false)
-    setFormData({
-      materialId: '',
-      type: 'IN',
-      quantity: '',
-      notes: '',
-    })
+    try {
+      await addTransaction({
+        materialId: formData.materialId,
+        materialName: material.name,
+        type: formData.type,
+        quantity: parseInt(formData.quantity, 10),
+        notes: formData.notes || undefined,
+      })
+      setIsModalOpen(false)
+      setFormData({ materialId: '', type: 'IN', quantity: '', notes: '' })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-['Syne'] text-[48px] font-extrabold text-[#0B1E3D] leading-tight">
-            Transactions
-          </h1>
-          <p className="text-[#8A93A8] mt-2">
-            Track all stock movements and inventory changes
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1.5">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Шилжүүлэг</h1>
+          <p className="text-sm text-muted-foreground max-w-xl">
+            Нөөцийн бүх хөдөлгөөн, агуулахын өөрчлөлтийг бүртгэнэ
           </p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
-          <Plus size={16} className="mr-2" />
-          Add Transaction
+          <IconPlus className="size-4" />
+          <span>Шилжүүлэг нэмэх</span>
         </Button>
       </div>
 
-      {/* Transactions Table */}
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(11,30,61,0.07)] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-[#0B1E3D]">
-              <tr>
-                <th className="px-4 py-3.5 text-left font-['Syne'] text-[11px] font-semibold tracking-[0.1em] uppercase text-[#6B9FE4]">
-                  Date
-                </th>
-                <th className="px-4 py-3.5 text-left font-['Syne'] text-[11px] font-semibold tracking-[0.1em] uppercase text-[#6B9FE4]">
-                  Material
-                </th>
-                <th className="px-4 py-3.5 text-left font-['Syne'] text-[11px] font-semibold tracking-[0.1em] uppercase text-[#6B9FE4]">
-                  Type
-                </th>
-                <th className="px-4 py-3.5 text-left font-['Syne'] text-[11px] font-semibold tracking-[0.1em] uppercase text-[#6B9FE4]">
-                  Quantity
-                </th>
-                <th className="px-4 py-3.5 text-left font-['Syne'] text-[11px] font-semibold tracking-[0.1em] uppercase text-[#6B9FE4]">
-                  Notes
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((transaction) => {
-                const material = materials.find(m => m.id === transaction.materialId)
-                return (
-                  <tr key={transaction.id} className="border-b border-[#F4F6FA] hover:bg-[#F4F6FA] transition-colors">
-                    <td className="px-4 py-3.5 text-sm text-[#0B1E3D]">
-                      {new Date(transaction.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="font-medium text-sm text-[#0B1E3D]">{transaction.materialName}</div>
-                      {material && (
-                        <div className="text-xs text-[#8A93A8] mt-0.5">{material.type}</div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <Badge variant={transaction.type === 'IN' ? 'in' : 'out'}>
-                        {transaction.type === 'IN' ? '↑' : '↓'} {transaction.type}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span className={`text-sm font-semibold ${transaction.type === 'IN' ? 'text-[#22C27A]' : 'text-[#E03E3E]'}`}>
-                        {transaction.type === 'IN' ? '+' : '-'}{transaction.quantity} boxes
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 text-sm text-[#8A93A8]">
-                      {transaction.notes || '—'}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+      <DataTable
+        columns={columns}
+        data={transactions}
+        loading={loading}
+        searchColumn="materialName"
+        searchPlaceholder="Материалаар хайх..."
+      />
 
-        {transactions.length === 0 && (
-          <div className="text-center py-12 text-[#8A93A8]">
-            No transactions recorded yet
-          </div>
-        )}
-      </div>
-
-      {/* Add Transaction Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Transaction</DialogTitle>
+            <DialogTitle>Шинэ шилжүүлэг нэмэх</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <Select
-              label="Material"
+              label="Материал"
               value={formData.materialId}
-              onChange={(e) => setFormData({ ...formData, materialId: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, materialId: e.target.value })
+              }
               required
             >
-              <option value="">Select a material...</option>
-              {materials.map(m => (
+              <option value="">Материал сонгоно уу...</option>
+              {materials.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.name} ({m.quantity} boxes available)
                 </option>
@@ -147,40 +144,51 @@ export default function TransactionsPage() {
             </Select>
 
             <Select
-              label="Transaction Type"
+              label="Шилжүүлгийн төрөл"
               value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value as 'IN' | 'OUT' })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  type: e.target.value as 'IN' | 'OUT',
+                })
+              }
               required
             >
-              <option value="IN">IN — Stock Received</option>
-              <option value="OUT">OUT — Stock Used</option>
+              <option value="IN">IN — Нөөц орсон</option>
+              <option value="OUT">OUT — Нөөц гарсан</option>
             </Select>
 
             <Input
-              label="Quantity (boxes)"
+              label="Тоо хэмжээ (хайрцаг)"
               type="number"
               min={1}
               placeholder="10"
               value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, quantity: e.target.value })
+              }
               required
             />
 
             <Textarea
-              label="Notes (optional)"
+              label="Тэмдэглэл (заавал биш)"
               rows={3}
               placeholder="Additional remarks..."
               value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
             />
 
-            <div className="flex gap-3 justify-end pt-4">
-              <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
-                Cancel
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Болих
               </Button>
-              <Button type="submit">
-                Add Transaction
-              </Button>
+              <Button type="submit">Шилжүүлэг нэмэх</Button>
             </div>
           </form>
         </DialogContent>
